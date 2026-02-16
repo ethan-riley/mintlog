@@ -11,7 +11,7 @@ services:
   postgres:
     image: postgres:16-alpine
     ports:
-      - "5432:5432"
+      - "6543:5432"
     environment:
       POSTGRES_USER: mintlog
       POSTGRES_PASSWORD: mintlog

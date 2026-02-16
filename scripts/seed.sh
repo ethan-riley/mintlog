@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PG_URL="${PG_URL:-postgres://mintlog:mintlog@localhost:5432/mintlog?sslmode=disable}"
+PG_URL="${PG_URL:-postgres://mintlog:mintlog@localhost:6543/mintlog?sslmode=disable}"
 TENANT_NAME="${TENANT_NAME:-testcorp}"
 KEY_NAME="${KEY_NAME:-dev-key}"
 RAW_KEY="${RAW_KEY:-mlk_testkey_$(openssl rand -hex 16)}"
 
 echo "==> Creating tenant: $TENANT_NAME"
-TENANT_ID=$(psql "$PG_URL" -tAc "
+TENANT_ID=$(psql "$PG_URL" -qtAc "
   INSERT INTO tenants (name, plan, retention_days)
   VALUES ('$TENANT_NAME', 'pro', 90)
   ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name

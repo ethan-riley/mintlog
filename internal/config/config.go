@@ -1,8 +1,6 @@
 package config
 
 import (
-	"strings"
-
 	"github.com/spf13/viper"
 )
 
@@ -25,7 +23,7 @@ type PostgresConfig struct {
 }
 
 func (p PostgresConfig) DSN() string {
-	return "postgres://" + p.User + ":" + p.Password + "@" + p.Host + ":" + viper.GetString("postgres.port") + "/" + p.DB + "?sslmode=disable"
+	return "postgres://" + p.User + ":" + p.Password + "@" + p.Host + ":" + viper.GetString("postgres_port") + "/" + p.DB + "?sslmode=disable"
 }
 
 type NATSConfig struct {
@@ -60,63 +58,62 @@ func Load() (*Config, error) {
 	viper.SetConfigType("env")
 	viper.AddConfigPath(".")
 	viper.AutomaticEnv()
-	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
-	// Defaults
-	viper.SetDefault("postgres.host", "localhost")
-	viper.SetDefault("postgres.port", 5432)
-	viper.SetDefault("postgres.user", "mintlog")
-	viper.SetDefault("postgres.password", "mintlog")
-	viper.SetDefault("postgres.db", "mintlog")
-	viper.SetDefault("nats.url", "nats://localhost:4222")
-	viper.SetDefault("opensearch.url", "http://localhost:9200")
-	viper.SetDefault("opensearch.user", "admin")
-	viper.SetDefault("opensearch.password", "M1ntl0g!Pass")
-	viper.SetDefault("redis.addr", "localhost:6379")
-	viper.SetDefault("redis.password", "")
-	viper.SetDefault("redis.db", 0)
-	viper.SetDefault("minio.endpoint", "localhost:9000")
-	viper.SetDefault("minio.accesskey", "minioadmin")
-	viper.SetDefault("minio.secretkey", "minioadmin")
-	viper.SetDefault("minio.usessl", false)
-	viper.SetDefault("ingest.addr", ":8080")
-	viper.SetDefault("api.addr", ":8081")
+	// Defaults — keys use underscores to match .env file keys
+	viper.SetDefault("postgres_host", "localhost")
+	viper.SetDefault("postgres_port", 6543)
+	viper.SetDefault("postgres_user", "mintlog")
+	viper.SetDefault("postgres_password", "mintlog")
+	viper.SetDefault("postgres_db", "mintlog")
+	viper.SetDefault("nats_url", "nats://localhost:4222")
+	viper.SetDefault("opensearch_url", "http://localhost:9200")
+	viper.SetDefault("opensearch_user", "admin")
+	viper.SetDefault("opensearch_password", "M1ntl0g!Pass")
+	viper.SetDefault("redis_addr", "localhost:6379")
+	viper.SetDefault("redis_password", "")
+	viper.SetDefault("redis_db", 0)
+	viper.SetDefault("minio_endpoint", "localhost:9000")
+	viper.SetDefault("minio_access_key", "minioadmin")
+	viper.SetDefault("minio_secret_key", "minioadmin")
+	viper.SetDefault("minio_use_ssl", false)
+	viper.SetDefault("ingest_addr", ":8080")
+	viper.SetDefault("api_addr", ":8081")
 
 	// Try reading .env file; ignore if not found
 	_ = viper.ReadInConfig()
 
 	cfg := &Config{
 		Postgres: PostgresConfig{
-			Host:     viper.GetString("postgres.host"),
-			Port:     viper.GetInt("postgres.port"),
-			User:     viper.GetString("postgres.user"),
-			Password: viper.GetString("postgres.password"),
-			DB:       viper.GetString("postgres.db"),
+			Host:     viper.GetString("postgres_host"),
+			Port:     viper.GetInt("postgres_port"),
+			User:     viper.GetString("postgres_user"),
+			Password: viper.GetString("postgres_password"),
+			DB:       viper.GetString("postgres_db"),
 		},
 		NATS: NATSConfig{
-			URL: viper.GetString("nats.url"),
+			URL: viper.GetString("nats_url"),
 		},
 		OpenSearch: OpenSearchConfig{
-			URL:      viper.GetString("opensearch.url"),
-			User:     viper.GetString("opensearch.user"),
-			Password: viper.GetString("opensearch.password"),
+			URL:      viper.GetString("opensearch_url"),
+			User:     viper.GetString("opensearch_user"),
+			Password: viper.GetString("opensearch_password"),
 		},
 		Redis: RedisConfig{
-			Addr:     viper.GetString("redis.addr"),
-			Password: viper.GetString("redis.password"),
-			DB:       viper.GetInt("redis.db"),
+			Addr:     viper.GetString("redis_addr"),
+			Password: viper.GetString("redis_password"),
+			DB:       viper.GetInt("redis_db"),
 		},
 		MinIO: MinIOConfig{
-			Endpoint:  viper.GetString("minio.endpoint"),
-			AccessKey: viper.GetString("minio.accesskey"),
-			SecretKey: viper.GetString("minio.secretkey"),
-			UseSSL:    viper.GetBool("minio.usessl"),
+			Endpoint:  viper.GetString("minio_endpoint"),
+			AccessKey: viper.GetString("minio_access_key"),
+			SecretKey: viper.GetString("minio_secret_key"),
+			UseSSL:    viper.GetBool("minio_use_ssl"),
 		},
 		Ingest: ServerConfig{
-			Addr: viper.GetString("ingest.addr"),
+			Addr: viper.GetString("ingest_addr"),
 		},
 		API: ServerConfig{
-			Addr: viper.GetString("api.addr"),
+			Addr: viper.GetString("api_addr"),
 		},
 	}
 

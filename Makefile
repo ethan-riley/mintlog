@@ -10,7 +10,7 @@ BINARY_DIR=bin
 SERVICES=ingestd pipelined apid alertd notifierd
 
 # Database
-PG_URL ?= postgres://mintlog:mintlog@localhost:5432/mintlog?sslmode=disable
+PG_URL ?= postgres://mintlog:mintlog@localhost:6543/mintlog?sslmode=disable
 
 build-all: $(addprefix build-,$(SERVICES))
 
